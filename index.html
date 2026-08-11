@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- THƯ VIỆN SUPABASE SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -73,7 +75,7 @@
 
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
         
-        <!-- BẢNG QUẢN TRỊ GIẢNG VIÊN (ẨN MẶC ĐỊNH - CHỈ HIỆN KHI ĐĂNG NHẬP) -->
+        <!-- BẢNG QUẢN TRỊ GIẢNG VIÊN -->
         <div id="teacherPanel" class="hidden bg-amber-50/95 border-2 border-amber-400 p-4 md:p-6 rounded-2xl shadow-xl space-y-5 transition-all">
             <div class="flex justify-between items-center border-b border-amber-200/80 pb-3">
                 <div class="flex items-center gap-2">
@@ -141,7 +143,7 @@
                             </tr>
                         </thead>
                         <tbody id="gradingTableBody" class="divide-y divide-slate-100">
-                            <!-- Dữ liệu đổ động qua JS -->
+                            <!-- Dữ liệu từ Supabase đổ động vào đây -->
                         </tbody>
                     </table>
                 </div>
@@ -264,7 +266,7 @@
                             <textarea id="formNote" rows="2" placeholder="Lời nhắn đến giảng viên..." class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight"></textarea>
                         </div>
 
-                        <button type="submit" class="w-full bg-accent hover:bg-emerald-700 active:scale-95 text-white font-bold py-2.5 rounded-lg text-xs transition shadow flex items-center justify-center gap-2">
+                        <button type="submit" id="submitBtn" class="w-full bg-accent hover:bg-emerald-700 active:scale-95 text-white font-bold py-2.5 rounded-lg text-xs transition shadow flex items-center justify-center gap-2">
                             <i class="fa-solid fa-paper-plane"></i> Gửi Bài Làm
                         </button>
                     </form>
@@ -272,7 +274,7 @@
                     <div id="successBox" class="hidden mt-3 p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-center transition-all">
                         <i class="fa-solid fa-circle-check text-accent text-2xl mb-1"></i>
                         <p class="font-bold text-emerald-800 text-xs">ĐÃ NỘP BÀI THÀNH CÔNG!</p>
-                        <p class="text-[11px] text-emerald-600 mt-0.5">Bài làm đã xuất hiện trên bảng chấm điểm của giảng viên.</p>
+                        <p class="text-[11px] text-emerald-600 mt-0.5">Bài làm đã được lưu trực tiếp vào Cơ sở dữ liệu đám mây.</p>
                     </div>
                 </section>
             </div>
@@ -320,8 +322,15 @@
         <p>© 2026 Cô Hồ Ngọc Hà.</p>
     </footer>
 
-    <!-- LOGIC XỬ LÝ DỮ LIỆU & BẢO MẬT -->
+    <!-- LOGIC XỬ LÝ DỮ LIỆU ĐÁM MÂY SUPABASE -->
     <script>
+        // CẤU HÌNH SUPABASE CLIENT
+        const SUPABASE_URL = 'https://llqyrwwqaauewebwjosa.supabase.co';
+        // PUBLISHABLE KEY:
+        const SUPABASE_ANON_KEY = 'sb_publishable_tYgi9LLZDBytJWkbCyCe7g_YWKV6Mtn'; 
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // CẤU HÌNH TÀI KHOẢN GIẢNG VIÊN
         const TEACHER_AUTH = {
             user: "hongocha",
@@ -380,26 +389,6 @@
                 ]
             }
         };
-
-        function getStoredSubmissions() {
-            const stored = safeGetStorage('tvu_submissions_db');
-            if (stored) {
-                try { return JSON.parse(stored); } catch(e) {}
-            }
-            return {
-                'ee101': [
-                    { name: 'Nguyễn Văn A', mssv: '110124001', classCode: 'DA24OT01', link: 'https://drive.google.com', score: '8.5', comment: 'Bài làm tốt, trình bày mạch lạc.', submitTime: '14:20 - 18/08/2026' },
-                    { name: 'Trần Thị B', mssv: '110124002', classCode: 'DA24OT01', link: 'https://drive.google.com', score: '', comment: '', submitTime: '09:15 - 19/08/2026' }
-                ],
-                'ep102': [], 'ep103': [], 'ma201': [], 'ma202': []
-            };
-        }
-
-        let submissionsDatabase = getStoredSubmissions();
-
-        function saveSubmissionsToStorage() {
-            safeSetStorage('tvu_submissions_db', JSON.stringify(submissionsDatabase));
-        }
 
         // XỬ LÝ ĐĂNG NHẬP / ĐĂNG XUẤT
         function handleAuthClick() {
@@ -483,7 +472,7 @@
             if (panel) panel.classList.toggle('hidden');
         }
 
-        function switchCourse() {
+        async function switchCourse() {
             const courseSelect = document.getElementById('courseSelect');
             if (!courseSelect) return;
             
@@ -512,22 +501,42 @@
                 `).join('');
             }
 
-            renderGradingTable();
+            await renderGradingTable();
             const gradeResultBox = document.getElementById('gradeResultBox');
             if (gradeResultBox) gradeResultBox.classList.add('hidden');
         }
 
-        function renderGradingTable() {
+        // TẢI BÀI TẬP TỪ SUPABASE ĐỂ CHẤM ĐIỂM
+        async function renderGradingTable() {
             const courseSelect = document.getElementById('courseSelect');
             if (!courseSelect) return;
 
             const courseKey = courseSelect.value;
-            const list = submissionsDatabase[courseKey] || [];
             const tbody = document.getElementById('gradingTableBody');
             if (!tbody) return;
 
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="p-6 text-center text-slate-500 font-semibold">
+                        <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tải dữ liệu từ Đám mây...
+                    </td>
+                </tr>
+            `;
+
+            const { data: list, error } = await supabaseClient
+                .from('submissions')
+                .select('*')
+                .eq('course_key', courseKey)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Lỗi lấy bài nộp:', error);
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-red-600 font-bold">Không thể kết nối CSDL: ${error.message}</td></tr>`;
+                return;
+            }
+
             const total = list.length;
-            const graded = list.filter(item => item.score !== undefined && item.score !== "").length;
+            const graded = list.filter(item => item.score && item.score.trim() !== "").length;
             const pending = total - graded;
 
             document.getElementById('statTotal').innerText = total;
@@ -547,7 +556,7 @@
             }
 
             tbody.innerHTML = list.map((item, index) => {
-                const isGraded = item.score !== undefined && item.score !== "";
+                const isGraded = item.score && item.score.trim() !== "";
                 return `
                     <tr class="hover:bg-amber-50/40 transition">
                         <td class="p-3 text-center font-bold text-slate-400">${index + 1}</td>
@@ -559,22 +568,22 @@
                         </td>
                         <td class="p-3">
                             <span class="font-bold text-tvuBlue">${item.mssv}</span>
-                            <div class="text-[10px] text-slate-500 font-semibold">${item.classCode}</div>
+                            <div class="text-[10px] text-slate-500 font-semibold">${item.class_code}</div>
                         </td>
                         <td class="p-3">
                             <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-bold underline inline-flex items-center gap-1">
                                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Mở File Bài Làm
                             </a>
-                            <div class="text-[10px] text-slate-400 mt-0.5">${item.submitTime}</div>
+                            <div class="text-[10px] text-slate-400 mt-0.5">${item.submit_time || ''}</div>
                         </td>
                         <td class="p-3">
-                            <input type="number" step="0.1" min="0" max="10" id="score_${index}" value="${item.score || ''}" placeholder="0.0" class="w-20 px-2.5 py-1 border border-slate-300 rounded-lg text-xs font-bold text-red-600 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/20">
+                            <input type="number" step="0.1" min="0" max="10" id="score_${item.id}" value="${item.score || ''}" placeholder="0.0" class="w-20 px-2.5 py-1 border border-slate-300 rounded-lg text-xs font-bold text-red-600 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/20">
                         </td>
                         <td class="p-3">
-                            <input type="text" id="comment_${index}" value="${item.comment || ''}" placeholder="Gõ nhận xét..." class="w-full px-2.5 py-1 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <input type="text" id="comment_${item.id}" value="${item.comment || ''}" placeholder="Gõ nhận xét..." class="w-full px-2.5 py-1 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
                         </td>
                         <td class="p-3 text-center">
-                            <button onclick="saveSingleGrade(${index})" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center justify-center gap-1 mx-auto">
+                            <button onclick="saveSingleGrade('${item.id}')" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center justify-center gap-1 mx-auto">
                                 <i class="fa-solid fa-floppy-disk"></i> Lưu
                             </button>
                         </td>
@@ -583,42 +592,55 @@
             }).join('');
         }
 
-        function saveSingleGrade(index) {
-            const courseKey = document.getElementById('courseSelect').value;
-            const scoreVal = document.getElementById(`score_${index}`).value.trim();
-            const commentVal = document.getElementById(`comment_${index}`).value.trim();
+        // LƯU ĐIỂM TRỰC TIẾP LÊN SUPABASE
+        async function saveSingleGrade(id) {
+            const scoreVal = document.getElementById(`score_${id}`).value.trim();
+            const commentVal = document.getElementById(`comment_${id}`).value.trim();
 
-            submissionsDatabase[courseKey][index].score = scoreVal;
-            submissionsDatabase[courseKey][index].comment = commentVal;
+            const { error } = await supabaseClient
+                .from('submissions')
+                .update({ score: scoreVal, comment: commentVal })
+                .eq('id', id);
 
-            saveSubmissionsToStorage();
+            if (error) {
+                alert('Lỗi lưu điểm: ' + error.message);
+                return;
+            }
+
+            alert('Đã cập nhật kết quả lên CSDL Đám mây!');
             renderGradingTable();
-
-            alert(`Đã lưu kết quả thành công cho sinh viên ${submissionsDatabase[courseKey][index].name}!`);
         }
 
-        function handleFormSubmit(e) {
+        // GỬI BÀI TẬP VÀO SUPABASE
+        async function handleFormSubmit(e) {
             e.preventDefault();
-            const courseKey = document.getElementById('courseSelect').value;
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang nộp bài...`;
 
+            const courseKey = document.getElementById('courseSelect').value;
             const name = document.getElementById('formName').value.trim();
             const classCode = document.getElementById('formClass').value.trim();
             const mssv = document.getElementById('formMSSV').value.trim();
             const link = document.getElementById('formLink').value.trim();
+            const note = document.getElementById('formNote').value.trim();
 
             const now = new Date();
             const submitTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} - ${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
 
-            if (!submissionsDatabase[courseKey]) {
-                submissionsDatabase[courseKey] = [];
+            const { error } = await supabaseClient
+                .from('submissions')
+                .insert([
+                    { course_key: courseKey, name: name, class_code: classCode, mssv: mssv, link: link, note: note, submit_time: submitTime }
+                ]);
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gửi Bài Làm`;
+
+            if (error) {
+                alert('Lỗi khi nộp bài: ' + error.message);
+                return;
             }
-
-            submissionsDatabase[courseKey].unshift({
-                name, mssv, classCode, link, score: '', comment: '', submitTime
-            });
-
-            saveSubmissionsToStorage();
-            renderGradingTable();
 
             document.getElementById('submissionForm').reset();
             const successBox = document.getElementById('successBox');
@@ -626,16 +648,24 @@
                 successBox.classList.remove('hidden');
                 setTimeout(() => { successBox.classList.add('hidden'); }, 4000);
             }
+
+            renderGradingTable();
         }
 
-        function exportToExcel() {
+        // XUẤT FILE EXCEL TỪ DỮ LIỆU ĐÁM MÂY
+        async function exportToExcel() {
             const courseKey = document.getElementById('courseSelect').value;
             const courseSelectElem = document.getElementById('courseSelect');
             const courseName = courseSelectElem.options[courseSelectElem.selectedIndex].text;
-            const list = submissionsDatabase[courseKey] || [];
 
-            if (list.length === 0) {
-                alert('Môn học này hiện chưa có bài nộp nào để xuất file Excel!');
+            const { data: list, error } = await supabaseClient
+                .from('submissions')
+                .select('*')
+                .eq('course_key', courseKey)
+                .order('created_at', { ascending: false });
+
+            if (error || !list || list.length === 0) {
+                alert('Môn học này hiện chưa có bài nộp nào trên hệ thống!');
                 return;
             }
 
@@ -643,12 +673,12 @@
                 "STT": idx + 1,
                 "Mã Số Sinh Viên": item.mssv,
                 "Họ và Tên Sinh Viên": item.name,
-                "Mã Lớp": item.classCode,
+                "Mã Lớp": item.class_code,
                 "Tên Môn Học": courseName,
-                "Điểm Số": item.score !== "" ? parseFloat(item.score) : "Chưa chấm",
+                "Điểm Số": item.score !== "" && item.score !== null ? parseFloat(item.score) : "Chưa chấm",
                 "Lời Nhận Xét": item.comment || "Chưa có nhận xét",
                 "Link File Bài Làm": item.link,
-                "Thời Gian Nộp": item.submitTime
+                "Thời Gian Nộp": item.submit_time
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(excelData);
@@ -677,20 +707,27 @@
             alert('Đã cập nhật hạn chót thành công!');
         }
 
-        function lookupGrade() {
+        // TRA CỨU ĐIỂM TỪ CSDL ĐÁM MÂY
+        async function lookupGrade() {
             const courseKey = document.getElementById('courseSelect').value;
             const mssv = document.getElementById('searchMSSV').value.trim();
             const resultBox = document.getElementById('gradeResultBox');
             
             if(!mssv) return alert('Vui lòng nhập Mã Số Sinh Viên (MSSV)!');
 
-            const list = submissionsDatabase[courseKey] || [];
-            const student = list.find(item => item.mssv.toLowerCase() === mssv.toLowerCase());
-
             resultBox.classList.remove('hidden');
+            resultBox.className = "p-4 rounded-xl border bg-slate-50 border-slate-200 text-xs text-slate-600";
+            resultBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tra cứu trên máy chủ...`;
 
-            if(student) {
-                const hasScore = student.score !== undefined && student.score !== "";
+            const { data: list, error } = await supabaseClient
+                .from('submissions')
+                .select('*')
+                .eq('course_key', courseKey)
+                .ilike('mssv', mssv);
+
+            if(list && list.length > 0) {
+                const student = list[0];
+                const hasScore = student.score && student.score.trim() !== "";
                 resultBox.className = "p-4 rounded-xl border bg-blue-50/80 border-blue-200 text-xs space-y-2.5 shadow-sm";
                 resultBox.innerHTML = `
                     <div class="flex justify-between items-center border-b border-blue-200/80 pb-2">
