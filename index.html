@@ -26,8 +26,8 @@
                     <i class="fa-solid fa-graduation-cap text-2xl text-blue-200"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg md:text-xl font-bold tracking-wide">TRƯỜNG ĐẠI HỌC TRÀ VINH</h1>
-                    <p class="text-xs text-blue-200">CỔNG QUẢN LÝ GIẢNG DẠY - CÔ HỒ NGỌC HÀ</p>
+                    <h1 class="text-lg md:text-xl font-bold tracking-wide">QUẢN LÝ GIẢNG DẠY</h1>
+                    <p class="text-xs text-blue-200">CÔ HỒ NGỌC HÀ</p>
                 </div>
             </div>
             
@@ -36,7 +36,7 @@
                 <select id="courseSelect" onchange="switchCourse()" class="bg-blue-950 text-white text-sm font-semibold rounded-lg px-3 py-2 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-auto cursor-pointer">
                     <option value="ee101"> MÔN KỸ THUẬT ĐIỆN - ĐIỆN TỬ </option>
                     <option value="ep102"> MÔN KỸ THUẬT ĐIỆN</option>
-                    <option value="ep102"> MÔN MẠCH ĐIỆN 1</option>
+                    <option value="ep103"> MÔN MẠCH ĐIỆN 1</option>
                     <option value="ma201"> MÔN HÀM PHỨC VÀ TOÁN TỬ LAPLACE</option>
                     <option value="ma202"> MÔN ANH VĂN CHUYÊN NGÀNH</option>
                 </select>
@@ -159,7 +159,7 @@
     </main>
 
     <footer class="bg-tvuBlue text-blue-200 text-xs py-4 mt-8 text-center border-t border-blue-900">
-        <p>© 2026 Trường Đại học Trà Vinh - Giảng viên Cô Hồ Ngọc Hà.</p>
+        <p>© 2026 Cô Hồ Ngọc Hà.</p>
     </footer>
 
     <script>
@@ -167,22 +167,36 @@
             'ee101': {
                 defaultDeadline: '2026-08-20T23:59',
                 docs: [
-                    { name: 'Bài giảng Chương 1 & 2 - Điện tử cơ bản', link: 'https://drive.google.com' },
-                    { name: 'Đề bài tập lớn Kỹ thuật điện tử', link: 'https://drive.google.com' }
+                    { name: 'Tài liệu học tập', link: 'https://drive.google.com' },
+                    { name: 'Đề bài tập', link: 'https://drive.google.com' }
                 ]
             },
             'ep102': {
                 defaultDeadline: '2026-08-25T17:00',
                 docs: [
-                    { name: 'Giáo trình Kỹ thuật điện đại cương', link: 'https://drive.google.com' },
-                    { name: 'Hướng dẫn thực hành phòng Thí nghiệm', link: 'https://drive.google.com' }
+                    { name: 'Tài liệu học tập', link: 'https://drive.google.com' },
+                    { name: 'Tài liệu tham khảo', link: 'https://drive.google.com' }
+                ]
+            },
+            'ep103': {
+                defaultDeadline: '2026-08-25T17:00',
+                docs: [
+                    { name: 'Tài liệu học tập', link: 'https://drive.google.com' },
+                    { name: 'Tài liệu tham khảo', link: 'https://drive.google.com' }
                 ]
             },
             'ma201': {
                 defaultDeadline: '2026-08-30T23:59',
                 docs: [
-                    { name: 'Bài giảng Hàm phức & Biến đổi Laplace', link: 'https://drive.google.com' },
-                    { name: 'Tổng hợp công thức & Bài tập mẫu', link: 'https://drive.google.com' }
+                    { name: 'Tài liệu học tập', link: 'https://drive.google.com' },
+                    { name: 'Bảng biến đổi Laplace', link: 'https://drive.google.com' }
+                ]
+            },
+            'ma202': {
+                defaultDeadline: '2026-08-30T23:59',
+                docs: [
+                    { name: 'Tài liệu học tập', link: 'https://drive.google.com' },
+                    { name: 'Tài liệu khác', link: 'https://drive.google.com' }
                 ]
             }
         };
