@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Giảng Dạy</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        primaryHover: '#1d4ed8',
+                        accentGreen: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- HEADER / NAVIGATION BAR -->
+    <header class="bg-primary text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-[# graduation-cap text-2xl text-blue-200"></i>
+                <h1 class="text-xl font-bold tracking-wide">PORTAL GIẢNG DẠY CÁ NHÂN</h1>
+            </div>
+            
+            <!-- COURSE SELECTOR DROPDOWN -->
+            <div class="flex items-center space-x-2 w-full md:w-auto">
+                <label class="text-xs md:text-sm text-blue-200 font-medium whitespace-nowrap">Môn học:</label>
+                <select id="courseSelect" class="bg-blue-900 text-white font-semibold text-sm rounded-lg px-3 py-2 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full md:w-auto">
+                    <option value="ee101">🔌 Kỹ thuật điện - điện tử</option>
+                    <option value="ep102">⚡ Kỹ thuật điện</option>
+                    <option value="ma201">📐 Hàm phức và toán tử Laplace</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+        
+        <!-- TOP STATS / ANNOUNCEMENT -->
+        <div class="bg-blue-50 border-l-4 border-primary p-4 rounded-r-lg mb-8 shadow-sm flex items-start space-x-3">
+            <i class="fa-solid fa-circle-info text-primary text-xl mt-0.5"></i>
+            <div>
+                <h2 class="font-bold text-primary text-base">Thông báo môn học</h2>
+                <p class="text-sm text-slate-600 mt-0.5">Chào mừng các bạn sinh viên! Vui lòng chọn đúng môn học, xem tài liệu phân theo chương và hoàn thành bài tập đúng thời hạn quy định.</p>
+            </div>
+        </div>
+
+        <!-- TWO COLUMN LAYOUT -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- LEFT COLUMN: TÀI LIỆU & BÀI TRẮC NGHIỆM (2 Cols) -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- SECTION 1: KHO TÀI LIỆU -->
+                <section class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
+                        <h2 class="text-lg font-bold text-primary flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open text-blue-600"></i> Kho Tài Liệu Phân Chương
+                        </h2>
+                        <span class="text-xs bg-blue-100 text-primary px-2.5 py-1 rounded-full font-semibold"> Cập nhật mới </span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Chương 1 -->
+                        <div class="border border-slate-200 rounded-lg p-4 hover:border-blue-300 transition">
+                            <h3 class="font-semibold text-slate-800 text-sm mb-3">Chương 1: Khái niệm cơ bản & Lý thuyết chung</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                                <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-slate-50 border border-transparent hover:border-slate-200 text-slate-700">
+                                    <i class="fa-solid fa-file-pdf text-red-500 text-lg"></i>
+                                    <span class="truncate">Slide_Giang_Day_Chuong1.pdf</span>
+                                </a>
+                                <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-slate-50 border border-transparent hover:border-slate-200 text-slate-700">
+                                    <i class="fa-brands fa-google-drive text-green-500 text-lg"></i>
+                                    <span class="truncate">Link Drive Video Bài Giảng</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Chương 2 -->
+                        <div class="border border-slate-200 rounded-lg p-4 hover:border-blue-300 transition">
+                            <h3 class="font-semibold text-slate-800 text-sm mb-3">Chương 2: Ứng dụng & Phương pháp tính toán</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                                <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-slate-50 border border-transparent hover:border-slate-200 text-slate-700">
+                                    <i class="fa-solid fa-file-powerpoint text-amber-600 text-lg"></i>
+                                    <span class="truncate">Bai_Tap_Mau_Chuong2.pptx</span>
+                                </a>
+                                <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-slate-50 border border-transparent hover:border-slate-200 text-slate-700">
+                                    <i class="fa-solid fa-file-word text-blue-600 text-lg"></i>
+                                    <span class="truncate">Huong_Dan_Thuc_Hanh.docx</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: BÀI KIỂM TRA TRẮC NGHIỆM -->
+                <section class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
+                        <h2 class="text-lg font-bold text-primary flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-blue-600"></i> Bài Kiểm Tra Trắc Nghiệm Ngẫu Nhiên
+                        </h2>
+                        <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-semibold">15 Phút</span>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-semibold uppercase text-slate-500">Đề xáo trộn theo chương</span>
+                            <span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold">🔴 Hạn chót: 23:59 Chủ Nhật</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-700 mb-4">Mỗi sinh viên sẽ nhận được bộ câu hỏi ngẫu nhiên được trích xuất từ các chương. Kết quả và điểm số sẽ hiển thị ngay sau khi bấm nộp bài.</p>
+                        <button onclick="alert('Tính năng làm bài trắc nghiệm sẽ mở khi bạn cập nhật ngân hàng đề!')" class="w-full bg-primary hover:bg-primaryHover text-white py-2.5 rounded-lg font-semibold text-sm transition shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-pen-to-square"></i> Bắt Đầu Làm Bài Ngay
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- RIGHT COLUMN: CỔNG NỘP BÀI TẬP (1 Col) -->
+            <div class="space-y-8">
+                
+                <section class="bg-white p-6 rounded-xl shadow-md border border-slate-100 sticky top-20">
+                    <h2 class="text-lg font-bold text-primary mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Cổng Nộp Bài Tập File
+                    </h2>
+                    <p class="text-xs text-slate-500 mb-4">Tải lên bài tập cá nhân/nhóm (PDF, Word, Zip hoặc Link Drive)</p>
+
+                    <form id="submissionForm" onsubmit="event.preventDefault(); alert('Đã ghi nhận bài nộp!');" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên sinh viên (*)</label>
+                            <input type="text" required placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <!-- Mã Lớp & MSSV tách làm 2 cột riêng -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Mã Lớp (*)</label>
+                                <select required class="w-full px-2 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white">
+                                    <option value="">-- Chọn --</option>
+                                    <option value="K68-CNTT">K68-CNTT</option>
+                                    <option value="K68-ĐTVT">K68-ĐTVT</option>
+                                    <option value="K68-TDH">K68-TDH</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">MSSV (*)</label>
+                                <input type="text" required placeholder="20268899" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">File bài làm / Link Google Drive (*)</label>
+                            <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center hover:bg-slate-50 transition cursor-pointer">
+                                <i class="fa-solid fa-paperclip text-slate-400 text-xl mb-1"></i>
+                                <p class="text-xs text-slate-500">Kéo & thả file hoặc dán URL Drive vào ô bên dưới</p>
+                            </div>
+                            <input type="text" placeholder="https://drive.google.com/..." class="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Lời nhắn cho giảng viên</label>
+                            <textarea rows="2" placeholder="Ghi chú thêm nếu có..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-bold py-2.5 rounded-lg text-sm transition shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Gửi Bài Làm
+                        </button>
+                    </form>
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>© 2026 Hệ Thống Quản Lý Giảng Dạy Cá Nhân. Bảo lưu mọi quyền.</p>
+            <p class="text-slate-500">Tối ưu hiển thị trên Máy tính bàn, Laptop và Điện thoại di động.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
