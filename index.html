@@ -32,7 +32,7 @@
 <body class="bg-slate-100/70 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-tvuBlue">
 
     <!-- HEADER / BAR THƯƠNG HIỆU -->
-    <header class="bg-tvuBlue text-white shadow-md sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
+    <header class="bg-tvuBlue text-white shadow-md sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
             <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
                 <div class="flex items-center space-x-3">
@@ -41,12 +41,13 @@
                     </div>
                     <div>
                         <h1 class="text-base md:text-lg font-bold tracking-wide uppercase leading-tight text-white">Quản Lý Giảng Dạy</h1>
-                        <p class="text-xs text-blue-200/90 font-medium">Cô Hồ Ngọc Hà </p>
+                        <p class="text-xs text-blue-200/90 font-medium">Cô Hồ Ngọc Hà</p>
                     </div>
                 </div>
 
-                <button onclick="toggleTeacherPanel()" class="md:hidden bg-amber-600 hover:bg-amber-500 active:scale-95 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-user-gear"></i> GVs
+                <!-- Nút chế độ Giảng viên Mobile -->
+                <button id="mobileAuthBtn" onclick="handleAuthClick()" class="md:hidden bg-amber-600 hover:bg-amber-500 active:scale-95 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-lock" id="mobileAuthIcon"></i> <span id="mobileAuthText">Đăng nhập GV</span>
                 </button>
             </div>
             
@@ -62,8 +63,9 @@
                     </select>
                 </div>
 
-                <button onclick="toggleTeacherPanel()" class="hidden md:flex bg-amber-600 hover:bg-amber-500 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition shadow flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-user-gear"></i> Chế độ Giảng viên
+                <!-- Nút chế độ Giảng viên Desktop -->
+                <button id="desktopAuthBtn" onclick="handleAuthClick()" class="hidden md:flex bg-amber-600 hover:bg-amber-500 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition shadow flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-lock" id="desktopAuthIcon"></i> <span id="desktopAuthText">Đăng nhập Giảng viên</span>
                 </button>
             </div>
         </div>
@@ -71,13 +73,18 @@
 
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
         
-        <!-- BẢNG QUẢN TRỊ GIẢNG VIÊN & CHẤM ĐIỂM -->
-        <div id="teacherPanel" class="hidden bg-amber-50/90 border-2 border-amber-300/80 p-4 md:p-6 rounded-2xl shadow-xl space-y-5 transition-all">
+        <!-- BẢNG QUẢN TRỊ GIẢNG VIÊN (ẨN MẶC ĐỊNH - CHỈ HIỆN KHI ĐĂNG NHẬP) -->
+        <div id="teacherPanel" class="hidden bg-amber-50/95 border-2 border-amber-400 p-4 md:p-6 rounded-2xl shadow-xl space-y-5 transition-all">
             <div class="flex justify-between items-center border-b border-amber-200/80 pb-3">
-                <h3 class="font-bold text-amber-950 text-sm md:text-base flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-amber-700"></i> BẢNG ĐIỀU HÀNH & HỆ THỐNG CHẤM ĐIỂM
-                </h3>
-                <button onclick="toggleTeacherPanel()" class="text-xs bg-amber-200/80 hover:bg-amber-300/80 text-amber-950 font-bold px-3 py-1.5 rounded-lg transition">Đóng [X]</button>
+                <div class="flex items-center gap-2">
+                    <span class="bg-amber-600 text-white text-[10px] uppercase font-extrabold px-2 py-0.5 rounded">Admin Mode</span>
+                    <h3 class="font-bold text-amber-950 text-sm md:text-base">
+                        BẢNG ĐIỀU HÀNH & HỆ THỐNG CHẤM ĐIỂM
+                    </h3>
+                </div>
+                <button onclick="logoutTeacher()" class="text-xs bg-red-100 hover:bg-red-200 text-red-800 font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                </button>
             </div>
 
             <!-- CÀI ĐẶT HẠN CHÓT -->
@@ -134,7 +141,7 @@
                             </tr>
                         </thead>
                         <tbody id="gradingTableBody" class="divide-y divide-slate-100">
-                            <!-- Dữ liệu đổ động -->
+                            <!-- Dữ liệu đổ động qua JS -->
                         </tbody>
                     </table>
                 </div>
@@ -273,12 +280,56 @@
         </div>
     </main>
 
+    <!-- MODAL ĐĂNG NHẬP GIẢNG VIÊN -->
+    <div id="loginModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-sm p-6 relative space-y-4 transform transition-all scale-100">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold text-sm">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="text-center space-y-1">
+                <div class="inline-flex bg-amber-100 p-3 rounded-full text-amber-700 mb-1">
+                    <i class="fa-solid fa-user-shield text-2xl"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-800">Đăng Nhập Giảng Viên</h3>
+                <p class="text-xs text-slate-500">Chỉ dành riêng cho Cô Hồ Ngọc Hà</p>
+            </div>
+
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Tên đăng nhập</label>
+                    <input type="text" id="loginUser" required placeholder="Tên tài khoản..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu</label>
+                    <input type="password" id="loginPass" required placeholder="•••••••••" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+
+                <div id="loginError" class="hidden text-[11px] text-red-600 font-bold bg-red-50 p-2 rounded-lg border border-red-200 text-center">
+                    Tên đăng nhập hoặc mật khẩu không chính xác!
+                </div>
+
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-bold py-2.5 rounded-lg text-xs transition shadow">
+                    Xác nhận đăng nhập
+                </button>
+            </form>
+        </div>
+    </div>
+
     <footer class="bg-tvuBlue text-blue-200 text-xs py-4 mt-8 text-center border-t border-blue-900/60">
         <p>© 2026 Trường Đại học Trà Vinh — Giảng viên Cô Hồ Ngọc Hà.</p>
     </footer>
 
-    <!-- LOGIC XỬ LÝ AN TOÀN -->
+    <!-- LOGIC XỬ LÝ DỮ LIỆU & BẢO MẬT -->
     <script>
+        // CẤU HÌNH TÀI KHOẢN GIẢNG VIÊN
+        const TEACHER_AUTH = {
+            user: "hongocha",
+            pass: "Ha@552025"
+        };
+
+        let isTeacherLoggedIn = false;
+
         function safeGetStorage(key) {
             try { return localStorage.getItem(key); } catch (e) { return null; }
         }
@@ -293,7 +344,7 @@
                 rawDeadline: '2026-08-20T23:59',
                 docs: [
                     { name: 'Tài liệu giảng dạy Kỹ thuật Điện - điện tử', link: 'https://drive.google.com/file/d/1p3X4N33_EG9t5OeBTqDuuHsVR9BOmF3Y/view?usp=sharing' },
-                    { name: 'Bài tập', link: 'https://drive.google.com' }
+                    { name: 'Bài tập ôn tập', link: 'https://drive.google.com' }
                 ]
             },
             'ep102': {
@@ -301,7 +352,7 @@
                 rawDeadline: '2026-08-22T17:00',
                 docs: [
                     { name: 'Tài liệu giảng dạy Kỹ thuật điện', link: 'https://drive.google.com' },
-                    { name: 'Bài tập ', link: 'https://drive.google.com' }
+                    { name: 'Bài tập', link: 'https://drive.google.com' }
                 ]
             },
             'ep103': {
@@ -348,6 +399,88 @@
 
         function saveSubmissionsToStorage() {
             safeSetStorage('tvu_submissions_db', JSON.stringify(submissionsDatabase));
+        }
+
+        // XỬ LÝ ĐĂNG NHẬP / ĐĂNG XUẤT
+        function handleAuthClick() {
+            if (isTeacherLoggedIn) {
+                toggleTeacherPanel();
+            } else {
+                openLoginModal();
+            }
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+
+            if (u === TEACHER_AUTH.user && p === TEACHER_AUTH.pass) {
+                isTeacherLoggedIn = true;
+                closeLoginModal();
+                updateAuthUI();
+                showTeacherPanel();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function logoutTeacher() {
+            isTeacherLoggedIn = false;
+            updateAuthUI();
+            hideTeacherPanel();
+        }
+
+        function updateAuthUI() {
+            const deskText = document.getElementById('desktopAuthText');
+            const deskIcon = document.getElementById('desktopAuthIcon');
+            const mobText = document.getElementById('mobileAuthText');
+            const mobIcon = document.getElementById('mobileAuthIcon');
+
+            if (isTeacherLoggedIn) {
+                deskText.innerText = "Bảng Điều Hành GV";
+                deskIcon.className = "fa-solid fa-sliders";
+                mobText.innerText = "Bảng GVs";
+                mobIcon.className = "fa-solid fa-sliders";
+            } else {
+                deskText.innerText = "Đăng nhập Giảng viên";
+                deskIcon.className = "fa-solid fa-lock";
+                mobText.innerText = "Đăng nhập GV";
+                mobIcon.className = "fa-solid fa-lock";
+            }
+        }
+
+        function showTeacherPanel() {
+            const panel = document.getElementById('teacherPanel');
+            if (panel) {
+                panel.classList.remove('hidden');
+                panel.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function hideTeacherPanel() {
+            const panel = document.getElementById('teacherPanel');
+            if (panel) panel.classList.add('hidden');
+        }
+
+        function toggleTeacherPanel() {
+            if (!isTeacherLoggedIn) {
+                openLoginModal();
+                return;
+            }
+            const panel = document.getElementById('teacherPanel');
+            if (panel) panel.classList.toggle('hidden');
         }
 
         function switchCourse() {
@@ -527,11 +660,6 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "BangDiem");
             XLSX.writeFile(workbook, `BangDiem_${courseKey.toUpperCase()}_TVU.xlsx`);
-        }
-
-        function toggleTeacherPanel() {
-            const panel = document.getElementById('teacherPanel');
-            if (panel) panel.classList.toggle('hidden');
         }
 
         function saveAdminDeadline() {
