@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUẢN LÝ GIẢNG DẠY | Cô Hồ Ngọc Hà</title>
+    <title>QUẢN LÝ GIẢNG DẠY - TVU | Cô Hồ Ngọc Hà</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- THƯ VIỆN ĐẶC THỤ XUẤT FILE EXCEL chuẩn .XLSX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { tvuBlue: '#003366', tvuLight: '#0055a5', accent: '#10b981' }
+                    colors: { tvuBlue: '#003366', tvuLight: '#0055a5', accent: '#10b981', gold: '#d97706' }
                 }
             }
         }
@@ -26,38 +28,107 @@
                     <i class="fa-solid fa-graduation-cap text-2xl text-blue-200"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg md:text-xl font-bold tracking-wide">QUẢN LÝ GIẢNG DẠY</h1>
-                    <p class="text-xs text-blue-200">CÔ HỒ NGỌC HÀ</p>
+                    <h1 class="text-lg md:text-xl font-bold tracking-wide">TRƯỜNG ĐẠI HỌC TRÀ VINH</h1>
+                    <p class="text-xs text-blue-200">PORTAL GIẢNG DẠY - CÔ HỒ NGỌC HÀ</p>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-2 w-full md:w-auto">
-                <label class="text-xs text-blue-200 font-medium whitespace-nowrap">Chọn môn học:</label>
-                <select id="courseSelect" onchange="switchCourse()" class="bg-blue-950 text-white text-sm font-semibold rounded-lg px-3 py-2 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-auto cursor-pointer">
-                    <option value="ee101"> Môn Kỹ thuật Điện - điện tử </option>
-                    <option value="ep102"> Môn Kỹ thuật Điện</option>
-                    <option value="ep103"> Môn Mạch điện 1</option>
-                    <option value="ma201"> Môn Hàm phức và Toán tử Laplace</option>
-                    <option value="ma202"> Môn Anh văn chuyên ngành</option>
-                </select>
+            <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-end">
+                <div class="flex items-center space-x-2">
+                    <label class="text-xs text-blue-200 font-medium whitespace-nowrap">Môn học:</label>
+                    <select id="courseSelect" onchange="switchCourse()" class="bg-blue-950 text-white text-xs md:text-sm font-semibold rounded-lg px-3 py-2 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
+                        <option value="ee101">🔌 Môn Kỹ thuật Điện - điện tử</option>
+                        <option value="ep102">⚡ Môn Kỹ thuật Điện</option>
+                        <option value="ep103">🔋 Môn Mạch điện 1</option>
+                        <option value="ma201">📐 Môn Hàm phức và Toán tử Laplace</option>
+                        <option value="ma202">🇬🇧 Môn Anh văn chuyên ngành</option>
+                    </select>
+                </div>
+
+                <button onclick="toggleTeacherPanel()" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-user-gear"></i> <span class="hidden sm:inline">Chế độ</span> Giảng viên
+                </button>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
         
+        <!-- BẢNG QUẢN TRỊ GIẢNG VIÊN & CHẤM ĐIỂM ONLINE (CHỈ CÔ MỞ BẰNG NÚT) -->
+        <div id="teacherPanel" class="hidden bg-amber-50 border-2 border-amber-400 p-4 md:p-5 rounded-xl shadow-lg space-y-5">
+            <div class="flex justify-between items-center border-b border-amber-200 pb-3">
+                <h3 class="font-bold text-amber-900 text-sm md:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-amber-700"></i> BẢNG ĐIỀU HÀNH & HỆ THỐNG CHẤM ĐIỂM GIẢNG VIÊN
+                </h3>
+                <button onclick="toggleTeacherPanel()" class="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold px-2.5 py-1 rounded">Đóng [X]</button>
+            </div>
+
+            <!-- PHẦN 1: TÙY CHỈNH HẠN CHÓT NỘP BÀI -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-white p-3 rounded-lg border border-amber-200">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Cài đặt Hạn chót nộp bài môn đang chọn:</label>
+                    <div class="flex gap-2">
+                        <input type="datetime-local" id="adminDeadlineInput" class="bg-white border border-amber-300 rounded px-3 py-1.5 font-bold text-slate-700 w-full focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <button onclick="saveAdminDeadline()" class="bg-amber-700 hover:bg-amber-800 text-white px-4 py-1.5 rounded font-bold whitespace-nowrap shadow">Lưu Hạn Chót</button>
+                    </div>
+                </div>
+                <div class="text-slate-600 flex items-center">
+                    <p class="text-[11px] leading-relaxed text-amber-900">
+                        <i class="fa-solid fa-circle-info text-amber-600"></i> <strong>Lưu ý:</strong> Thay đổi hạn chót tại đây sẽ ngay lập tức được hiển thị và áp dụng đối với giao diện làm bài của sinh viên.
+                    </p>
+                </div>
+            </div>
+
+            <!-- PHẦN 2: BẢNG CHẤM ĐIỂM TRỰC TUYẾN & XUẤT FILE EXCEL -->
+            <div class="space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-xs md:text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-list-check text-tvuLight"></i> Danh Sách Bài Nộp Sinh Viên & Khung Nhập Điểm
+                        </h4>
+                        <p class="text-[11px] text-slate-500">Nhập điểm số và lời nhận xét trực tiếp vào khung tương ứng dưới đây.</p>
+                    </div>
+
+                    <!-- NÚT XUẤT FILE EXCEL NỘP ĐÀO TẠO -->
+                    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition shadow-md flex items-center gap-2 whitespace-nowrap self-start sm:self-auto">
+                        <i class="fa-solid fa-file-excel text-sm"></i> Tải Bảng Điểm Về File Excel (.xlsx)
+                    </button>
+                </div>
+
+                <!-- BẢNG DỮ LIỆU BÀI NỘP VÀ KHUNG NHẬP ĐIỂM -->
+                <div class="overflow-x-auto bg-white rounded-lg border border-slate-200 shadow-sm">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="p-3 w-10 text-center">STT</th>
+                                <th class="p-3">Họ và Tên</th>
+                                <th class="p-3">MSSV / Lớp</th>
+                                <th class="p-3">File Bài Làm</th>
+                                <th class="p-3 w-28">Khung Điểm (0-10)</th>
+                                <th class="p-3">Khung Nhận Xét Của Giảng Viên</th>
+                                <th class="p-3 text-center w-24">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gradingTableBody" class="divide-y divide-slate-100">
+                            <!-- Danh sách bài nộp và ô nhập điểm sinh viên render tự động qua JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- THÔNG BÁO MÔN HỌC -->
         <div class="bg-white border-l-4 border-tvuLight p-4 rounded-r-xl shadow-sm flex items-start space-x-3">
             <i class="fa-solid fa-bullhorn text-tvuLight text-xl mt-0.5"></i>
             <div>
                 <h2 class="font-bold text-tvuBlue text-sm uppercase tracking-wider">Thông báo giảng dạy</h2>
-                <p class="text-xs md:text-sm text-slate-600 mt-1">Sinh viên chú ý chọn đúng môn học để tải tài liệu bài giảng và nộp bài tập đúng thời hạn quy định.</p>
+                <p class="text-xs md:text-sm text-slate-600 mt-1">Sinh viên chú ý chọn đúng môn học trên thanh menu để tải tài liệu bài giảng, kiểm tra hạn chót và tra cứu điểm bài tập tự luận.</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- CỘT TRÁI: TÀI LIỆU HỌC TẬP & TRẮC NGHIỆM -->
+            <!-- CỘT TRÁI: TÀI LIỆU, TRẮC NGHIỆM & TRA CỨU ĐIỂM -->
             <div class="lg:col-span-2 space-y-6">
                 
                 <!-- KHUNG TÀI LIỆU HỌC TẬP -->
@@ -70,11 +141,11 @@
                     </div>
 
                     <div id="documentList" class="space-y-3">
-                        <!-- Nội dung tài liệu tự động thay đổi theo môn -->
+                        <!-- Tài liệu tự động tải theo từng môn chọn -->
                     </div>
                 </section>
 
-                <!-- BÀI TRẮC NGHIỆM KÈM TÙY CHỈNH HẠN CHÓT -->
+                <!-- BÀI TRẮC NGHIỆM & HẠN CHÓT CỐ ĐỊNH -->
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
                         <h2 class="text-base font-bold text-tvuBlue flex items-center gap-2">
@@ -87,19 +158,41 @@
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Đề xáo trộn tự động</span>
                             
-                            <!-- Ô TÙY CHỈNH HẠN CHÓT (Dành cho Giảng viên) -->
-                            <div class="flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 px-3 py-1.5 rounded-lg shadow-sm">
+                            <!-- Hạn chót hiển thị cố định đối với Sinh viên -->
+                            <div class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-3 py-1.5 rounded-lg shadow-sm">
                                 <i class="fa-solid fa-clock text-xs"></i>
-                                <label for="deadlineInput" class="text-xs font-bold whitespace-nowrap">Hạn chót:</label>
-                                <input type="datetime-local" id="deadlineInput" onchange="saveCustomDeadline()" class="bg-white border border-red-300 text-red-700 text-xs font-bold rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer">
+                                <span class="text-xs font-bold">Hạn chót: <span id="studentDeadlineDisplay" class="underline">23:59 - 20/08/2026</span></span>
                             </div>
                         </div>
 
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-1">
-                            <p class="text-xs text-slate-600">Sinh viên làm bài trắc nghiệm trực tuyến. Kết quả hiển thị ngay sau khi bấm nộp bài.</p>
-                            <button onclick="alert('Hệ thống trắc nghiệm sẵn sàng!')" class="w-full sm:w-auto whitespace-nowrap bg-tvuBlue hover:bg-tvuLight text-white font-semibold text-xs px-4 py-2.5 rounded-lg transition shadow">
+                            <p class="text-xs text-slate-600">Sinh viên làm bài trực tuyến. Hệ thống khóa cổng nộp bài ngay khi hết hạn.</p>
+                            <button onclick="alert('Hệ thống trắc nghiệm đang hoạt động!')" class="w-full sm:w-auto whitespace-nowrap bg-tvuBlue hover:bg-tvuLight text-white font-semibold text-xs px-4 py-2.5 rounded-lg transition shadow">
                                 Vào làm bài
                             </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TRA CỨU ĐIỂM BÀI TẬP TỰ LUẬN -->
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+                        <h2 class="text-base font-bold text-tvuBlue flex items-center gap-2">
+                            <i class="fa-solid fa-award text-gold"></i> Tra Cứu Điểm Bài Tập Tự Luận
+                        </h2>
+                        <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full font-semibold">Cập nhật sau khi cô chấm</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex gap-2">
+                            <input type="text" id="searchMSSV" placeholder="Nhập Mã số sinh viên (VD: 110124001)..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight font-semibold">
+                            <button onclick="lookupGrade()" class="bg-tvuBlue hover:bg-tvuLight text-white px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
+                                <i class="fa-solid fa-magnifying-glass"></i> Tra cứu
+                            </button>
+                        </div>
+
+                        <div id="gradeResultBox" class="hidden p-4 rounded-lg border text-xs space-y-2">
+                            <!-- Kết quả hiển thị động qua JS -->
                         </div>
                     </div>
                 </section>
@@ -110,35 +203,35 @@
             <div class="space-y-6">
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 sticky top-20">
                     <h2 class="text-base font-bold text-tvuBlue mb-1 flex items-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up text-tvuLight"></i> Cổng Nộp Bài Tập
+                        <i class="fa-solid fa-cloud-arrow-up text-tvuLight"></i> Cổng Nộp Bài Tập File
                     </h2>
-                    <p class="text-xs text-slate-500 mb-4">Điền chính xác thông tin để giảng viên chấm điểm</p>
+                    <p class="text-xs text-slate-500 mb-4">Điền chính xác thông tin để giảng viên ghi nhận</p>
 
                     <form id="submissionForm" onsubmit="handleFormSubmit(event)" class="space-y-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên sinh viên (*)</label>
-                            <input type="text" required placeholder="Nguyễn Văn A" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
+                            <input type="text" id="formName" required placeholder="Nguyễn Văn A" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
                         </div>
 
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Mã Lớp (*)</label>
-                                <input type="text" required placeholder="DA25CK" oninput="this.value = this.value.toUpperCase()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-bold text-tvuBlue focus:outline-none focus:ring-2 focus:ring-tvuLight uppercase">
+                                <input type="text" id="formClass" required placeholder="DA24OT01" oninput="this.value = this.value.toUpperCase()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-bold text-tvuBlue focus:outline-none focus:ring-2 focus:ring-tvuLight uppercase">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">MSSV (*)</label>
-                                <input type="text" required placeholder="110124001" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
+                                <input type="text" id="formMSSV" required placeholder="110124001" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Link File Bài Làm (Google Drive / OneDrive) (*)</label>
-                            <input type="url" required placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Link File Bài Làm (Drive / OneDrive) (*)</label>
+                            <input type="url" id="formLink" required placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Ghi chú thêm</label>
-                            <textarea rows="2" placeholder="Lời nhắn đến giảng viên..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight"></textarea>
+                            <textarea id="formNote" rows="2" placeholder="Lời nhắn đến giảng viên..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight"></textarea>
                         </div>
 
                         <button type="submit" class="w-full bg-accent hover:bg-emerald-600 text-white font-bold py-2.5 rounded-lg text-xs transition shadow flex items-center justify-center gap-2">
@@ -146,11 +239,11 @@
                         </button>
                     </form>
 
-                    <!-- THÔNG BÁO THÀNH CÔNG -->
+                    <!-- THÔNG BÁO NỘP BÀI THÀNH CÔNG -->
                     <div id="successBox" class="hidden mt-3 p-3 bg-emerald-50 border border-emerald-300 rounded-lg text-center">
                         <i class="fa-solid fa-circle-check text-accent text-2xl mb-1"></i>
                         <p class="font-bold text-emerald-800 text-xs">ĐÃ NỘP BÀI THÀNH CÔNG!</p>
-                        <p class="text-[11px] text-emerald-600 mt-0.5">Hệ thống đã ghi nhận thông tin của bạn.</p>
+                        <p class="text-[11px] text-emerald-600 mt-0.5">Bài làm đã xuất hiện trên bảng chấm điểm của giảng viên.</p>
                     </div>
                 </section>
             </div>
@@ -159,57 +252,79 @@
     </main>
 
     <footer class="bg-tvuBlue text-blue-200 text-xs py-4 mt-8 text-center border-t border-blue-900">
-        <p>© 2026 Cô Hồ Ngọc Hà.</p>
+        <p>© 2026 Trường Đại học Trà Vinh - Giảng viên Cô Hồ Ngọc Hà.</p>
     </footer>
 
     <script>
+        // Cấu hình dữ liệu tài liệu & hạn chót mặc định cho từng môn
         const courseData = {
             'ee101': {
-                defaultDeadline: '2026-08-20T23:59',
+                defaultDeadline: '23:59 - 20/08/2026',
+                rawDeadline: '2026-08-20T23:59',
                 docs: [
-                    { name: 'Tài liệu học tập', link: 'https://drive.google.com/file/d/1p3X4N33_EG9t5OeBTqDuuHsVR9BOmF3Y/view?usp=sharing' },
-                    { name: 'Đề bài tập', link: 'https://drive.google.com' }
+                    { name: 'Bài giảng Chương 1 & 2 - Kỹ thuật Điện - điện tử', link: 'https://drive.google.com' },
+                    { name: 'Đề bài tập lớn & Hướng dẫn mô phỏng', link: 'https://drive.google.com' }
                 ]
             },
             'ep102': {
-                defaultDeadline: '2026-08-25T17:00',
+                defaultDeadline: '17:00 - 22/08/2026',
+                rawDeadline: '2026-08-22T17:00',
                 docs: [
-                    { name: 'Tài liệu học tập', link: 'https://drive.google.com' },
-                    { name: 'Tài liệu tham khảo', link: 'https://drive.google.com' }
+                    { name: 'Giáo trình Kỹ thuật Điện đại cương', link: 'https://drive.google.com' },
+                    { name: 'Hướng dẫn thực hành phòng Thí nghiệm Điện', link: 'https://drive.google.com' }
                 ]
             },
             'ep103': {
-                defaultDeadline: '2026-08-25T17:00',
+                defaultDeadline: '23:59 - 25/08/2026',
+                rawDeadline: '2026-08-25T23:59',
                 docs: [
-                    { name: 'Tài liệu học tập', link: 'https://drive.google.com' },
-                    { name: 'Tài liệu tham khảo', link: 'https://drive.google.com' }
+                    { name: 'Bài giảng Mạch điện 1 - Các phương pháp phân tích', link: 'https://drive.google.com' },
+                    { name: 'Bộ câu hỏi ôn tập & Bài tập tự giải Mạch 1', link: 'https://drive.google.com' }
                 ]
             },
             'ma201': {
-                defaultDeadline: '2026-08-30T23:59',
+                defaultDeadline: '23:59 - 28/08/2026',
+                rawDeadline: '2026-08-28T23:59',
                 docs: [
-                    { name: 'Tài liệu học tập', link: 'https://drive.google.com/file/d/1CRjWbLrxQFPvRPsUwbre7S-SatyouJk6/view?usp=sharing' },
-                    { name: 'Bảng biến đổi Laplace', link: 'https://drive.google.com' }
+                    { name: 'Bài giảng Hàm phức & Biến đổi Laplace', link: 'https://drive.google.com' },
+                    { name: 'Tổng hợp công thức & Dạng bài tập thi Hàm phức', link: 'https://drive.google.com' }
                 ]
             },
             'ma202': {
-                defaultDeadline: '2026-08-30T23:59',
+                defaultDeadline: '17:00 - 30/08/2026',
+                rawDeadline: '2026-08-30T17:00',
                 docs: [
-                    { name: 'Tài liệu học tập', link: 'https://drive.google.com' },
-                    { name: 'Tài liệu khác', link: 'https://drive.google.com' }
+                    { name: 'Chuyên ngành Điện - Từ vựng & Thuật ngữ cốt lõi', link: 'https://drive.google.com' },
+                    { name: 'Tài liệu hướng dẫn đọc dịch Datasheets Kỹ thuật', link: 'https://drive.google.com' }
                 ]
             }
+        };
+
+        // Cơ sở dữ liệu danh sách bài nộp & điểm số lưu trữ theo từng môn học
+        let submissionsDatabase = {
+            'ee101': [
+                { name: 'Nguyễn Văn A', mssv: '110124001', classCode: 'DA24OT01', link: 'https://drive.google.com', score: '8.5', comment: 'Trình bày sạch đẹp, tính toán đúng các bước biến đổi.', submitTime: '14:20 - 18/08/2026' },
+                { name: 'Trần Thị B', mssv: '110124002', classCode: 'DA24OT01', link: 'https://drive.google.com', score: '9.0', comment: 'Lập luận xuất sắc, đáp số chính xác hoàn toàn.', submitTime: '09:15 - 19/08/2026' },
+                { name: 'Lê Hoàng C', mssv: '110124003', classCode: 'DA24CK02', link: 'https://drive.google.com', score: '', comment: '', submitTime: '10:00 - 20/08/2026' }
+            ],
+            'ep102': [],
+            'ep103': [],
+            'ma201': [],
+            'ma202': []
         };
 
         function switchCourse() {
             const courseKey = document.getElementById('courseSelect').value;
             const data = courseData[courseKey];
             
-            // Tải hạn chót từ bộ nhớ local (nếu đã từng chỉnh), hoặc lấy hạn chót mặc định
-            const savedDeadline = localStorage.getItem('deadline_' + courseKey);
-            document.getElementById('deadlineInput').value = savedDeadline || data.defaultDeadline;
+            // Tải hạn chót lưu trữ riêng cho từng môn
+            const savedDeadlineText = localStorage.getItem('deadlineText_' + courseKey);
+            const savedRawDeadline = localStorage.getItem('deadlineRaw_' + courseKey);
             
-            // Cập nhật danh sách tài liệu
+            document.getElementById('studentDeadlineDisplay').innerText = savedDeadlineText || data.defaultDeadline;
+            document.getElementById('adminDeadlineInput').value = savedRawDeadline || data.rawDeadline;
+            
+            // Render danh sách tài liệu
             const docContainer = document.getElementById('documentList');
             docContainer.innerHTML = data.docs.map(doc => `
                 <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-tvuLight transition">
@@ -220,21 +335,202 @@
                     <a href="${doc.link}" target="_blank" class="text-xs bg-tvuBlue text-white px-3 py-1 rounded hover:bg-tvuLight transition font-medium whitespace-nowrap">Tải về</a>
                 </div>
             `).join('');
+
+            // Render Bảng chấm điểm bài nộp của môn chọn
+            renderGradingTable();
+
+            document.getElementById('gradeResultBox').classList.add('hidden');
         }
 
-        function saveCustomDeadline() {
+        function renderGradingTable() {
             const courseKey = document.getElementById('courseSelect').value;
-            const newDeadline = document.getElementById('deadlineInput').value;
-            localStorage.setItem('deadline_' + courseKey, newDeadline);
+            const list = submissionsDatabase[courseKey] || [];
+            const tbody = document.getElementById('gradingTableBody');
+
+            if(list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-4 text-center text-slate-400 italic">Chưa có sinh viên nào nộp bài tập cho môn học này.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = list.map((item, index) => `
+                <tr class="hover:bg-amber-50/50 transition">
+                    <td class="p-3 text-center font-bold text-slate-500">${index + 1}</td>
+                    <td class="p-3 font-semibold text-slate-800">${item.name}</td>
+                    <td class="p-3">
+                        <span class="font-bold text-tvuBlue">${item.mssv}</span><br>
+                        <span class="text-[10px] text-slate-500 font-semibold">${item.classCode}</span>
+                    </td>
+                    <td class="p-3">
+                        <a href="${item.link}" target="_blank" class="text-blue-600 hover:underline font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Xem Bài Làm
+                        </a>
+                        <span class="text-[10px] text-slate-400 block">${item.submitTime}</span>
+                    </td>
+                    <td class="p-3">
+                        <!-- Khung Nhập Điểm Số -->
+                        <input type="number" step="0.1" min="0" max="10" id="score_${index}" value="${item.score}" placeholder="0.0" class="w-20 px-2 py-1 border border-slate-300 rounded text-xs font-bold text-red-600 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/30">
+                    </td>
+                    <td class="p-3">
+                        <!-- Khung Nhập Lời Nhận Xét -->
+                        <input type="text" id="comment_${index}" value="${item.comment}" placeholder="Nhập nhận xét cho sinh viên..." class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </td>
+                    <td class="p-3 text-center">
+                        <button onclick="saveSingleGrade(${index})" class="bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold px-2.5 py-1 rounded shadow transition">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu Điểm
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function saveSingleGrade(index) {
+            const courseKey = document.getElementById('courseSelect').value;
+            const scoreVal = document.getElementById(`score_${index}`).value;
+            const commentVal = document.getElementById(`comment_${index}`).value;
+
+            submissionsDatabase[courseKey][index].score = scoreVal;
+            submissionsDatabase[courseKey][index].comment = commentVal;
+
+            alert(`Đã lưu điểm (${scoreVal || 'Chưa nhập'}) và nhận xét cho sinh viên ${submissionsDatabase[courseKey][index].name}!`);
+        }
+
+        // TÍNH NĂNG XUẤT TOÀN BỘ BẢNG ĐIỂM RA FILE EXCEL (.XLSX)
+        function exportToExcel() {
+            const courseKey = document.getElementById('courseSelect').value;
+            const courseSelectElem = document.getElementById('courseSelect');
+            const courseName = courseSelectElem.options[courseSelectElem.selectedIndex].text;
+            const list = submissionsDatabase[courseKey] || [];
+
+            if (list.length === 0) {
+                alert('Chưa có dữ liệu bài nộp nào để xuất file Excel!');
+                return;
+            }
+
+            // Chuẩn hóa dữ liệu theo cấu trúc bảng điểm đào tạo
+            const excelData = list.map((item, idx) => ({
+                "STT": idx + 1,
+                "Mã Số Sinh Viên": item.mssv,
+                "Họ và Tên Sinh Viên": item.name,
+                "Mã Lớp": item.classCode,
+                "Tên Môn Học": courseName,
+                "Điểm Số": item.score !== "" ? parseFloat(item.score) : "Chưa chấm",
+                "Nhận Xét Của Giảng Viên": item.comment || "Chưa có nhận xét",
+                "Link Đường Dẫn Bài Làm": item.link,
+                "Thời Gian Nộp Bài": item.submitTime
+            }));
+
+            // Tạo workbook Excel bằng SheetJS
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+            
+            // Căn chỉnh độ rộng các cột tự động
+            worksheet['!cols'] = [
+                { wch: 6 },  // STT
+                { wch: 18 }, // MSSV
+                { wch: 25 }, // Họ tên
+                { wch: 12 }, // Lớp
+                { wch: 35 }, // Môn học
+                { wch: 12 }, // Điểm số
+                { wch: 40 }, // Nhận xét
+                { wch: 35 }, // Link
+                { wch: 20 }  // Thời gian
+            ];
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "BangDiem");
+
+            // Tải file về máy tính
+            const fileName = `BangDiem_${courseKey.toUpperCase()}_TVU.xlsx`;
+            XLSX.writeFile(workbook, fileName);
+        }
+
+        function toggleTeacherPanel() {
+            const panel = document.getElementById('teacherPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        function saveAdminDeadline() {
+            const courseKey = document.getElementById('courseSelect').value;
+            const rawVal = document.getElementById('adminDeadlineInput').value;
+            
+            if(!rawVal) return alert('Vui lòng chọn ngày giờ hợp lệ!');
+            
+            const d = new Date(rawVal);
+            const formatted = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} - ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+            
+            localStorage.setItem('deadlineText_' + courseKey, formatted);
+            localStorage.setItem('deadlineRaw_' + courseKey, rawVal);
+            
+            document.getElementById('studentDeadlineDisplay').innerText = formatted;
+            alert('Đã cập nhật Hạn chót mới cho sinh viên!');
+        }
+
+        function lookupGrade() {
+            const courseKey = document.getElementById('courseSelect').value;
+            const mssv = document.getElementById('searchMSSV').value.trim();
+            const resultBox = document.getElementById('gradeResultBox');
+            
+            if(!mssv) return alert('Vui lòng nhập Mã số sinh viên (MSSV)!');
+
+            const list = submissionsDatabase[courseKey] || [];
+            const student = list.find(item => item.mssv === mssv);
+
+            resultBox.classList.remove('hidden');
+
+            if(student) {
+                const hasScore = student.score !== "";
+                resultBox.className = "p-4 rounded-lg border bg-blue-50 border-blue-200 text-xs space-y-2";
+                resultBox.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-blue-200 pb-2">
+                        <span class="font-bold text-tvuBlue text-sm">${student.name} (MSSV: ${student.mssv})</span>
+                        <span class="${hasScore ? 'bg-emerald-600' : 'bg-amber-600'} text-white font-bold px-2 py-0.5 rounded text-[11px]">${hasScore ? 'Đã Chấm Điểm' : 'Đang Chờ Chấm'}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <span class="text-slate-600 font-semibold">Điểm bài tập tự luận:</span>
+                        <span class="text-base font-extrabold text-red-600">${hasScore ? student.score + ' / 10' : 'Chưa có điểm'}</span>
+                    </div>
+                    <div class="pt-1">
+                        <span class="font-bold text-slate-700">Nhận xét của giảng viên Cô Hồ Ngọc Hà:</span>
+                        <p class="text-slate-600 italic bg-white p-2 rounded border border-blue-100 mt-1">"${student.comment || 'Chưa có nhận xét.'}"</p>
+                    </div>
+                `;
+            } else {
+                resultBox.className = "p-4 rounded-lg border bg-amber-50 border-amber-200 text-xs text-amber-900";
+                resultBox.innerHTML = `
+                    <p class="font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Không tìm thấy dữ liệu!</p>
+                    <p class="mt-1">MSSV <strong>${mssv}</strong> chưa nộp bài hoặc chưa chọn đúng môn học. Vui lòng kiểm tra lại!</p>
+                `;
+            }
         }
 
         function handleFormSubmit(e) {
             e.preventDefault();
+            const courseKey = document.getElementById('courseSelect').value;
+
+            const name = document.getElementById('formName').value.trim();
+            const classCode = document.getElementById('formClass').value.trim();
+            const mssv = document.getElementById('formMSSV').value.trim();
+            const link = document.getElementById('formLink').value.trim();
+
+            const now = new Date();
+            const submitTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} - ${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+
+            // Thêm trực tiếp bài nộp vào Bảng chấm điểm của Giảng viên
+            submissionsDatabase[courseKey].push({
+                name, mssv, classCode, link, score: '', comment: '', submitTime
+            });
+
+            // Cập nhật lại Bảng chấm điểm
+            renderGradingTable();
+
             document.getElementById('submissionForm').reset();
             document.getElementById('successBox').classList.remove('hidden');
         }
 
-        // Khởi chạy ban đầu
+        // Khởi chạy hệ thống
         switchCourse();
     </script>
 </body>
