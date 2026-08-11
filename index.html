@@ -432,23 +432,24 @@
         }
 
         function updateAuthUI() {
-            const deskText = document.getElementById('desktopAuthText');
-            const deskIcon = document.getElementById('desktopAuthIcon');
-            const mobText = document.getElementById('mobileAuthText');
-            const mobIcon = document.getElementById('mobileAuthIcon');
+    const deskText = document.getElementById('desktopAuthText');
+    const deskIcon = document.getElementById('desktopAuthIcon');
+    const mobText = document.getElementById('mobileAuthText');
+    const mobIcon = document.getElementById('mobileAuthIcon');
 
-            if (isTeacherLoggedIn) {
-                deskText.innerText = "Bảng Điều Hành GV";
-                deskIcon.className = "fa-solid fa-sliders";
-                mobText.innerText = "Bảng GVs";
-                mobIcon.className = "fa-solid fa-sliders";
-            } else {
-                deskText.innerText = "Đăng nhập Giảng viên";
-                deskIcon.className = "fa-solid fa-lock";
-                mobText.innerText = "Đăng nhập GV";
-                mobIcon.className = "fa-solid fa-lock";
-            }
-        }
+    // Cố định tên nút luôn là "Đăng nhập GV" bất kể trạng thái đăng nhập
+    if (deskText) deskText.innerText = "Đăng nhập GV";
+    if (mobText) mobText.innerText = "Đăng nhập GV";
+
+    // Đổi biểu tượng icon để cô vẫn biết mình đã đăng nhập hay chưa (Tùy chọn)
+    if (isTeacherLoggedIn) {
+        if (deskIcon) deskIcon.className = "fa-solid fa-sliders";
+        if (mobIcon) mobIcon.className = "fa-solid fa-sliders";
+    } else {
+        if (deskIcon) deskIcon.className = "fa-solid fa-lock";
+        if (mobIcon) mobIcon.className = "fa-solid fa-lock";
+    }
+}
 
         function showTeacherPanel() {
             const panel = document.getElementById('teacherPanel');
