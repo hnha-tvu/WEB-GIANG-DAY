@@ -3,164 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUẢN LÝ GIẢNG DẠY - Cô Hồ Ngọc Hà</title>
+    <title>QUẢN LÝ GIẢNG DẠY - TVU | Cô Hồ Ngọc Hà</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { primary: '#1e40af', primaryHover: '#1d4ed8', accentGreen: '#10b981' }
+                    colors: { tvuBlue: '#003366', tvuLight: '#0055a5', accent: '#10b981' }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- HEADER -->
-    <header class="bg-primary text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+    <!-- HEADER / THƯƠNG HIỆU -->
+    <header class="bg-tvuBlue text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
             <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-graduation-cap text-2xl text-blue-200"></i>
-                <h1 class="text-xl font-bold tracking-wide">QUẢN LÝ GIẢNG DẠY</h1>
+                <div class="bg-white/10 p-2 rounded-lg">
+                    <i class="fa-solid fa-graduation-cap text-2xl text-blue-200"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold tracking-wide">TRƯỜNG ĐẠI HỌC TRÀ VINH</h1>
+                    <p class="text-xs text-blue-200">CỔNG QUẢN LÝ GIẢNG DẠY - CÔ HỒ NGỌC HÀ</p>
+                </div>
             </div>
             
             <div class="flex items-center space-x-2 w-full md:w-auto">
-                <label class="text-xs md:text-sm text-blue-200 font-medium whitespace-nowrap">Chọn môn học:</label>
-                <select id="courseSelect" onchange="updateCourseDeadline()" class="bg-blue-900 text-white font-semibold text-sm rounded-lg px-3 py-2 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full md:w-auto">
-                    <option value="ee101">MÔN KỸ THUẬT ĐIỆN - ĐIỆN TỬ</option>
-                    <option value="ep102">MÔN KỸ THUẬT ĐIỆN</option>
-                    <option value="ep102">MÔN MẠCH ĐIỆN 1</option>
-                    <option value="ma201">MÔN HÀM PHỨC VÀ TOÁN TỬ LAPLACE</option>
-                    <option value="ma201">MÔN ANH VĂN CHUYÊN NGÀNH</option>
+                <label class="text-xs text-blue-200 font-medium whitespace-nowrap">Chọn môn học:</label>
+                <select id="courseSelect" onchange="switchCourse()" class="bg-blue-950 text-white text-sm font-semibold rounded-lg px-3 py-2 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-auto cursor-pointer">
+                    <option value="ee101"> MÔN KỸ THUẬT ĐIỆN - ĐIỆN TỬ </option>
+                    <option value="ep102"> MÔN KỸ THUẬT ĐIỆN</option>
+                    <option value="ep102"> MÔN MẠCH ĐIỆN 1</option>
+                    <option value="ma201"> MÔN HÀM PHỨC VÀ TOÁN TỬ LAPLACE</option>
+                    <option value="ma202"> MÔN ANH VĂN CHUYÊN NGÀNH</option>
                 </select>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
         
-        <!-- THÔNG BÁO -->
-        <div class="bg-blue-50 border-l-4 border-primary p-4 rounded-r-lg mb-8 shadow-sm flex items-start space-x-3">
-            <i class="fa-solid fa-circle-info text-primary text-xl mt-0.5"></i>
+        <!-- THÔNG BÁO MÔN HỌC -->
+        <div class="bg-white border-l-4 border-tvuLight p-4 rounded-r-xl shadow-sm flex items-start space-x-3">
+            <i class="fa-solid fa-bullhorn text-tvuLight text-xl mt-0.5"></i>
             <div>
-                <h2 class="font-bold text-primary text-base">Thông báo môn học</h2>
-                <p class="text-sm text-slate-600 mt-0.5">Chào mừng các bạn sinh viên! Vui lòng tải tài liệu học tập và nộp bài làm trước thời hạn quy định.</p>
+                <h2 class="font-bold text-tvuBlue text-sm uppercase tracking-wider">Thông báo giảng dạy</h2>
+                <p class="text-xs md:text-sm text-slate-600 mt-1">Sinh viên chú ý chọn đúng môn học để tải tài liệu bài giảng và nộp bài tập đúng thời hạn quy định.</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <!-- CỘT TRÁI: TÀI LIỆU HỌC TẬP & TRẮC NGHIỆM -->
-            <div class="lg:col-span-2 space-y-8">
+            <div class="lg:col-span-2 space-y-6">
                 
-                <!-- TÀI LIỆU HỌC TẬP (KHUNG TỔNG HỢP) -->
-                <section class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
+                <!-- KHUNG TÀI LIỆU HỌC TẬP -->
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-                        <h2 class="text-lg font-bold text-primary flex items-center gap-2">
-                            <i class="fa-solid fa-book-open text-blue-600"></i> Tài liệu học tập
+                        <h2 class="text-base font-bold text-tvuBlue flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open text-tvuLight"></i> Tài liệu học tập
                         </h2>
-                        <span class="text-xs bg-blue-100 text-primary px-2.5 py-1 rounded-full font-semibold">Cập nhật liên tục</span>
+                        <span class="text-xs bg-blue-50 text-tvuLight font-semibold px-2.5 py-1 rounded-full border border-blue-100">Kho lưu trữ Google Drive</span>
                     </div>
 
-                    <!-- Khung duy nhất để đưa toàn bộ tài liệu vào -->
-                    <div class="border-2 border-dashed border-blue-200 bg-blue-50/30 rounded-xl p-5 space-y-3">
-                        <div class="flex items-center justify-between bg-white p-3 rounded-lg border border-slate-200 shadow-sm hover:border-blue-400 transition">
-                            <div class="flex items-center space-x-3 truncate">
-                                <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>
-                                <span class="font-medium text-sm text-slate-700 truncate">Bài giảng & Tài liệu môn học (Link Drive)</span>
-                            </div>
-                            <a href="https://drive.google.com" target="_blank" class="text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:bg-primaryHover transition font-semibold whitespace-nowrap">
-                                <i class="fa-solid fa-download mr-1"></i> Truy cập
-                            </a>
-                        </div>
-
-                        <div class="flex items-center justify-between bg-white p-3 rounded-lg border border-slate-200 shadow-sm hover:border-blue-400 transition">
-                            <div class="flex items-center space-x-3 truncate">
-                                <i class="fa-solid fa-folder-tree text-amber-500 text-xl"></i>
-                                <span class="font-medium text-sm text-slate-700 truncate">Tổng hợp Đề bài tập & Giáo trình chính</span>
-                            </div>
-                            <a href="https://drive.google.com" target="_blank" class="text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:bg-primaryHover transition font-semibold whitespace-nowrap">
-                                <i class="fa-solid fa-download mr-1"></i> Truy cập
-                            </a>
-                        </div>
+                    <div id="documentList" class="space-y-3">
+                        <!-- Nội dung tài liệu tự động thay đổi theo môn -->
                     </div>
                 </section>
 
-                <!-- BÀI TRẮC NGHIỆM KÈM HẠN CHÓT LINH HOẠT -->
-                <section class="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-                        <h2 class="text-lg font-bold text-primary flex items-center gap-2">
-                            <i class="fa-solid fa-list-check text-blue-600"></i> Bài Kiểm Tra Trắc Nghiệm Ngẫu Nhiên
+                <!-- BÀI TRẮC NGHIỆM KÈM TÙY CHỈNH HẠN CHÓT -->
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+                        <h2 class="text-base font-bold text-tvuBlue flex items-center gap-2">
+                            <i class="fa-solid fa-square-poll-vertical text-tvuLight"></i> Kiểm tra trắc nghiệm
                         </h2>
-                        <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-semibold">15 Phút</span>
+                        <span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-full font-bold">15 Phút</span>
                     </div>
 
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-3">
-                            <span class="text-xs font-semibold uppercase text-slate-500">Đề xáo trộn tự động</span>
-                            <!-- Hạn chót linh hoạt theo môn -->
-                            <div class="flex items-center space-x-1 text-xs bg-red-100 text-red-600 px-2.5 py-1 rounded font-bold">
-                                <i class="fa-solid fa-clock"></i>
-                                <span>Hạn chót: <span id="deadlineDisplay">23:59 - 15/08/2026</span></span>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Đề xáo trộn tự động</span>
+                            
+                            <!-- Ô TÙY CHỈNH HẠN CHÓT (Dành cho Giảng viên) -->
+                            <div class="flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 px-3 py-1.5 rounded-lg shadow-sm">
+                                <i class="fa-solid fa-clock text-xs"></i>
+                                <label for="deadlineInput" class="text-xs font-bold whitespace-nowrap">Hạn chót:</label>
+                                <input type="datetime-local" id="deadlineInput" onchange="saveCustomDeadline()" class="bg-white border border-red-300 text-red-700 text-xs font-bold rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer">
                             </div>
                         </div>
-                        <p class="text-sm font-medium text-slate-700 mb-4">Sinh viên làm bài trắc nghiệm trực tuyến. Hệ thống chấm điểm tự động ngay khi kết thúc.</p>
-                        <button onclick="alert('Hệ thống trắc nghiệm đang mở!')" class="w-full bg-primary hover:bg-primaryHover text-white py-2.5 rounded-lg font-semibold text-sm transition shadow flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-pen-to-square"></i> Bắt Đầu Làm Bài Ngay
-                        </button>
+
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-1">
+                            <p class="text-xs text-slate-600">Sinh viên làm bài trắc nghiệm trực tuyến. Kết quả hiển thị ngay sau khi bấm nộp bài.</p>
+                            <button onclick="alert('Hệ thống trắc nghiệm sẵn sàng!')" class="w-full sm:w-auto whitespace-nowrap bg-tvuBlue hover:bg-tvuLight text-white font-semibold text-xs px-4 py-2.5 rounded-lg transition shadow">
+                                Vào làm bài
+                            </button>
+                        </div>
                     </div>
                 </section>
 
             </div>
 
-            <!-- CỘT PHẢI: FORM NỘP BÀI -->
-            <div class="space-y-8">
-                <section class="bg-white p-6 rounded-xl shadow-md border border-slate-100 sticky top-20">
-                    <h2 class="text-lg font-bold text-primary mb-1 flex items-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Cổng Nộp Bài Tập File
+            <!-- CỘT PHẢI: FORM NỘP BÀI TẬP -->
+            <div class="space-y-6">
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 sticky top-20">
+                    <h2 class="text-base font-bold text-tvuBlue mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-tvuLight"></i> Cổng Nộp Bài Tập
                     </h2>
-                    <p class="text-xs text-slate-500 mb-4">Điền đầy đủ thông tin để hệ thống ghi nhận bài nộp</p>
+                    <p class="text-xs text-slate-500 mb-4">Điền chính xác thông tin để giảng viên chấm điểm</p>
 
-                    <form id="submissionForm" onsubmit="submitForm(event)" class="space-y-4">
+                    <form id="submissionForm" onsubmit="handleFormSubmit(event)" class="space-y-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên sinh viên (*)</label>
-                            <input type="text" required placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <input type="text" required placeholder="Nguyễn Văn A" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Mã Lớp (*)</label>
-                                <!-- Ô nhập Mã lớp tự động chuyển thành IN HOA -->
-                                <input type="text" required placeholder="DA24OT01" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary font-semibold text-blue-900">
+                                <input type="text" required placeholder="DA24OT01" oninput="this.value = this.value.toUpperCase()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-bold text-tvuBlue focus:outline-none focus:ring-2 focus:ring-tvuLight uppercase">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">MSSV (*)</label>
-                                <input type="text" required placeholder="110124001" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                <input type="text" required placeholder="110124001" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">File bài làm / Link Drive (*)</label>
-                            <input type="url" required placeholder="https://drive.google.com/file/d/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Link File Bài Làm (Google Drive / OneDrive) (*)</label>
+                            <input type="url" required placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Lời nhắn cho giảng viên</label>
-                            <textarea rows="2" placeholder="Ghi chú thêm nếu có..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Ghi chú thêm</label>
+                            <textarea rows="2" placeholder="Lời nhắn đến giảng viên..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-tvuLight"></textarea>
                         </div>
 
-                        <button type="submit" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-bold py-2.5 rounded-lg text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <button type="submit" class="w-full bg-accent hover:bg-emerald-600 text-white font-bold py-2.5 rounded-lg text-xs transition shadow flex items-center justify-center gap-2">
                             <i class="fa-solid fa-paper-plane"></i> Gửi Bài Làm
                         </button>
                     </form>
 
-                    <!-- THÔNG BÁO NỘP BÀI THÀNH CÔNG -->
-                    <div id="successMessage" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-300 rounded-lg text-center animate-fade-in">
-                        <i class="fa-solid fa-circle-check text-emerald-600 text-3xl mb-2"></i>
-                        <h3 class="font-bold text-emerald-800 text-sm">NỘP BÀI THÀNH CÔNG!</h3>
-                        <p class="text-xs text-emerald-700 mt-1">Hệ thống đã ghi nhận bài làm của bạn. Giảng viên sẽ kiểm tra và phản hồi sau.</p>
+                    <!-- THÔNG BÁO THÀNH CÔNG -->
+                    <div id="successBox" class="hidden mt-3 p-3 bg-emerald-50 border border-emerald-300 rounded-lg text-center">
+                        <i class="fa-solid fa-circle-check text-accent text-2xl mb-1"></i>
+                        <p class="font-bold text-emerald-800 text-xs">ĐÃ NỘP BÀI THÀNH CÔNG!</p>
+                        <p class="text-[11px] text-emerald-600 mt-0.5">Hệ thống đã ghi nhận thông tin của bạn.</p>
                     </div>
                 </section>
             </div>
@@ -168,31 +158,70 @@
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 text-center">
-        <p>© 2026 Hệ Thống Quản Lý Giảng Dạy - Cô Hồ Ngọc Hà.</p>
+    <footer class="bg-tvuBlue text-blue-200 text-xs py-4 mt-8 text-center border-t border-blue-900">
+        <p>© 2026 Trường Đại học Trà Vinh - Giảng viên Cô Hồ Ngọc Hà.</p>
     </footer>
 
     <script>
-        // Cấu hình Hạn chót theo từng môn
-        const deadlines = {
-            'ee101': '23:59 - 20/08/2026',
-            'ep102': '17:00 - 25/08/2026',
-            'ma201': '23:59 - 30/08/2026'
+        const courseData = {
+            'ee101': {
+                defaultDeadline: '2026-08-20T23:59',
+                docs: [
+                    { name: 'Bài giảng Chương 1 & 2 - Điện tử cơ bản', link: 'https://drive.google.com' },
+                    { name: 'Đề bài tập lớn Kỹ thuật điện tử', link: 'https://drive.google.com' }
+                ]
+            },
+            'ep102': {
+                defaultDeadline: '2026-08-25T17:00',
+                docs: [
+                    { name: 'Giáo trình Kỹ thuật điện đại cương', link: 'https://drive.google.com' },
+                    { name: 'Hướng dẫn thực hành phòng Thí nghiệm', link: 'https://drive.google.com' }
+                ]
+            },
+            'ma201': {
+                defaultDeadline: '2026-08-30T23:59',
+                docs: [
+                    { name: 'Bài giảng Hàm phức & Biến đổi Laplace', link: 'https://drive.google.com' },
+                    { name: 'Tổng hợp công thức & Bài tập mẫu', link: 'https://drive.google.com' }
+                ]
+            }
         };
 
-        function updateCourseDeadline() {
-            const course = document.getElementById('courseSelect').value;
-            document.getElementById('deadlineDisplay').innerText = deadlines[course] || '23:59 - 31/08/2026';
+        function switchCourse() {
+            const courseKey = document.getElementById('courseSelect').value;
+            const data = courseData[courseKey];
+            
+            // Tải hạn chót từ bộ nhớ local (nếu đã từng chỉnh), hoặc lấy hạn chót mặc định
+            const savedDeadline = localStorage.getItem('deadline_' + courseKey);
+            document.getElementById('deadlineInput').value = savedDeadline || data.defaultDeadline;
+            
+            // Cập nhật danh sách tài liệu
+            const docContainer = document.getElementById('documentList');
+            docContainer.innerHTML = data.docs.map(doc => `
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-tvuLight transition">
+                    <div class="flex items-center space-x-2 truncate">
+                        <i class="fa-solid fa-file-lines text-tvuLight"></i>
+                        <span class="text-xs font-semibold text-slate-700 truncate">${doc.name}</span>
+                    </div>
+                    <a href="${doc.link}" target="_blank" class="text-xs bg-tvuBlue text-white px-3 py-1 rounded hover:bg-tvuLight transition font-medium whitespace-nowrap">Tải về</a>
+                </div>
+            `).join('');
         }
 
-        function submitForm(event) {
-            event.preventDefault();
-            document.getElementById('submissionForm').reset();
-            document.getElementById('successMessage').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+        function saveCustomDeadline() {
+            const courseKey = document.getElementById('courseSelect').value;
+            const newDeadline = document.getElementById('deadlineInput').value;
+            localStorage.setItem('deadline_' + courseKey, newDeadline);
         }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            document.getElementById('submissionForm').reset();
+            document.getElementById('successBox').classList.remove('hidden');
+        }
+
+        // Khởi chạy ban đầu
+        switchCourse();
     </script>
 </body>
 </html>
